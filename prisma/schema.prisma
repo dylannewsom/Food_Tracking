@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// The Master Dictionary (The "Base Truth" of an item)
+model FoodItem {
+  id              String         @id @default(cuid())
+  name            String
+  barcode         String?        @unique // Optional, for when we add the scanner
+  baseServingSize Float?
+  baseCalories    Float
+  baseProtein     Float
+  baseFat         Float
+  baseCarbs       Float
+  
+  // A relationship linking this item to all the times you've eaten it
+  logs            FoodLogEntry[] 
+}
+
+// The Daily Diary (Your Food Tracking Sheet)
+model FoodLogEntry {
+  id               String   @id @default(cuid())
+  dateLogged       DateTime @default(now())
+  quantityConsumed Float
+
+  // Manual Overrides (Nullable. If null, we calculate using FoodItem base values)
+  manualCalories   Float?
+  manualProtein    Float?
+  manualFat        Float?
+  manualCarbs      Float?
+
+  // The Foreign Key linking back to the Master Dictionary
+  foodItemId       String
+  foodItem         FoodItem @relation(fields: [foodItemId], references: [id])
+}
