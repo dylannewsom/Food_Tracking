@@ -6,6 +6,6 @@ export default {
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env.DIRECT_URL, // dotenv ensures this is no longer blank!
+    url: process.env.DATABASE_URL, // Changed this to match your .env file!
   },
 };
