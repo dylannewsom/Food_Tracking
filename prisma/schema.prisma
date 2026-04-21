@@ -14,14 +14,16 @@ datasource db {
 
 // The Master Dictionary (The "Base Truth" of an item)
 model FoodItem {
-  id              String         @id @default(cuid())
+  id              String         @id @default(uuid())
   name            String
-  barcode         String?        @unique // Optional, for when we add the scanner
+  barcode         String?        @unique // for when we add the scanner
   baseServingSize Float?
+  baseServingUnit String?        // e.g. "g", "oz", "cup"
   baseCalories    Float
   baseProtein     Float
-  baseFat         Float
-  baseCarbs       Float
+  baseFat         Float  
+  baseCarbs       Float  
+  baseCaffeine    Float 
   
   // A relationship linking this item to all the times you've eaten it
   logs            FoodLogEntry[] 
@@ -29,15 +31,18 @@ model FoodItem {
 
 // The Daily Diary (Your Food Tracking Sheet)
 model FoodLogEntry {
-  id               String   @id @default(cuid())
+  id               String   @id @default(uuid())
   dateLogged       DateTime @default(now())
   quantityConsumed Float
 
   // Manual Overrides (Nullable. If null, we calculate using FoodItem base values)
+  manualServingSize Float?
+  manualServingUnit String?        // e.g. "g", "oz", "cup
   manualCalories   Float?
   manualProtein    Float?
-  manualFat        Float?
-  manualCarbs      Float?
+  manualFat        Float? 
+  manualCarbs      Float? 
+  manualCaffeine   Float? 
 
   // The Foreign Key linking back to the Master Dictionary
   foodItemId       String
