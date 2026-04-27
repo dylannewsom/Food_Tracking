@@ -14,7 +14,7 @@ datasource db {
 // The Master Dictionary (The "Base Truth" of an item)
 model FoodItem {
   id              String         @id @default(uuid())
-  name            String
+  name            String         @unique
   barcode         String?        @unique // for when we add the scanner
   baseServingSize Float?
   baseServingUnit String?        // e.g. "g", "oz", "cup"
@@ -23,6 +23,8 @@ model FoodItem {
   baseFat         Float  
   baseCarbs       Float  
   baseCaffeine    Float 
+  price           Float?        // for when we add the price tracking
+  rating          Float?        // for when we add the rating system
   
   // A relationship linking this item to all the times you've eaten it
   logs            FoodLogEntry[] 
@@ -33,6 +35,7 @@ model FoodLogEntry {
   id               String   @id @default(uuid())
   dateLogged       DateTime @default(now())
   quantityConsumed Float
+  itemType         String   
 
   // Manual Overrides (Nullable. If null, we calculate using FoodItem base values)
   manualServingSize Float?
